@@ -44,7 +44,7 @@ export interface IConfig
         tlsCertPath?: string;
         /** TLS policy configuration */
         tls?: {
-            /** Minimum TLS version (default: TLSv1) */
+            /** Minimum TLS version (default: TLSv1.2) */
             minVersion?: 'TLSv1.3' | 'TLSv1.2' | 'TLSv1.1' | 'TLSv1';
             /** Maximum TLS version */
             maxVersion?: 'TLSv1.3' | 'TLSv1.2' | 'TLSv1.1' | 'TLSv1';
@@ -158,7 +158,8 @@ export class Config
             if(this.smtpTlsHonorCipherOrder !== undefined && typeof this.smtpTlsHonorCipherOrder !== 'boolean')
                 throw new InvalidConfig('Property "receive.tls.honorCipherOrder" should be a boolean');
         }
-        else if(this.smtpRateLimitDuration && typeof this.smtpRateLimitDuration !== 'number')
+
+        if(this.smtpRateLimitDuration && typeof this.smtpRateLimitDuration !== 'number')
             throw new InvalidConfig(`Property "receive.rateLimit.duration" should be a number`);
         else if(this.smtpRateLimitLimit && typeof this.smtpRateLimitLimit !== 'number')
             throw new InvalidConfig(`Property "receive.rateLimit.limit" should be a number`);
@@ -276,7 +277,7 @@ export class Config
 
     static get smtpTlsMinVersion()
     {
-        return this.#config.receive?.tls?.minVersion;
+        return this.#config.receive?.tls?.minVersion ?? 'TLSv1.2';
     }
 
     static get smtpTlsMaxVersion()

@@ -204,7 +204,7 @@
                     "properties": {
                         "minVersion": {
                             "title": "Minimum TLS version",
-                            "description": "Allowed values: TLSv1, TLSv1.1, TLSv1.2, TLSv1.3 (default: TLSv1)",
+                            "description": "Allowed values: TLSv1, TLSv1.1, TLSv1.2, TLSv1.3 (default: TLSv1.2). Note: TLSv1 and TLSv1.1 are legacy interoperability options and also require lowering OpenSSL security level (e.g. ciphers: 'DEFAULT@SECLEVEL=0')",
                             "type": "string",
                             "enum": ["TLSv1", "TLSv1.1", "TLSv1.2", "TLSv1.3"]
                         },

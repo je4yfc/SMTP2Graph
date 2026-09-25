@@ -31,6 +31,48 @@ describe('Receive: TLS', async function(){
         });
     });
 
+    it('Default floor: reject client constrained to TLS 1.0 when minVersion is omitted', async function(){
+        await expect(submitAndVerifyMail({
+            transportOptions: {
+                secure: true,
+                ignoreTLS: false,
+                tls: {
+                    minVersion: 'TLSv1',
+                    maxVersion: 'TLSv1',
+                    ciphers: 'DEFAULT@SECLEVEL=0',
+                    rejectUnauthorized: false,
+                },
+            },
+        })).to.eventually.be.rejected;
+    });
+
+    it('Legacy opt-in: accept client when configured with minVersion TLSv1 and DEFAULT@SECLEVEL=0', async function(){
+        await expect(server.restart({
+            receive: {
+                secure: true,
+                tlsKeyPath: 'test/localhost.key',
+                tlsCertPath: 'test/localhost.crt',
+                tls: {
+                    minVersion: 'TLSv1',
+                    ciphers: 'DEFAULT@SECLEVEL=0',
+                },
+            },
+        }), 'Failed to restart server with legacy TLS 1.0 configuration').to.eventually.be.fulfilled;
+
+        await submitAndVerifyMail({
+            transportOptions: {
+                secure: true,
+                ignoreTLS: false,
+                tls: {
+                    minVersion: 'TLSv1',
+                    maxVersion: 'TLSv1',
+                    ciphers: 'DEFAULT@SECLEVEL=0',
+                    rejectUnauthorized: false,
+                },
+            },
+        });
+    });
+
     it('Connect to non secure server', async function(){
         // Restart server in non-secure mode
         await expect(server.restart({receive: {secure: false}}), 'Failed to restart server').to.eventually.be.fulfilled;
